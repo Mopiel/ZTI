@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { LoginPanel } from "./UserManagment/Login/LoginPanel";
 import MountainsImg from "./icons/city-3660779_1920.jpg";
+import { RegistrationPanel } from "./UserManagment/Registration/RegistrationPanel";
+import { NavigationBar } from "./NavigationBar/NavigationBar";
+import { BlurredBackground } from "./UserManagment/Wrapper/BlurredBackground";
 
 const App: React.FC = () => {
+  const views = ["Login", "Registration"];
+  const [selectedView, setSelectedView] = useState<string | number>(views[0]);
   return (
     <div
       className="App"
@@ -14,7 +19,18 @@ const App: React.FC = () => {
         backgroundPosition: "top",
       }}
     >
-      <LoginPanel />
+      <NavigationBar
+        {...{
+          selectedId: selectedView,
+          views: views.map((name, id) => ({
+            id: name,
+            name,
+            onClick: setSelectedView,
+          })),
+        }}
+      />
+      {selectedView === "Login" && <LoginPanel />}
+      {selectedView === "Registration" && <RegistrationPanel />}
     </div>
   );
 };

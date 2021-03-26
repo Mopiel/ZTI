@@ -4,22 +4,37 @@ import KeyIcon from "../../icons/key.svg";
 import LockIcon from "../../icons/lock.svg";
 import { Input } from "../Elements/Input";
 import { Button } from "../Elements/Button";
+import EmailIcon from "../../icons/email.svg";
 import { BlurredBackground } from "../Wrapper/BlurredBackground";
 
-export const LoginPanel: React.FC = () => {
+export const RegistrationPanel: React.FC = () => {
   const classes = useStyles();
-  const [credentials, setCredentials] = useState({ login: "", password: "" });
+  const [credentials, setCredentials] = useState({
+    email: "",
+    login: "",
+    password: "",
+  });
+
   return (
     <BlurredBackground>
-      <div className={classes.mainText}>Login Panel</div>
+      <div className={classes.mainText}>Registration Panel</div>
       <form
         onSubmit={() => {
           console.log("submit");
         }}
       >
         <Input
+          type={"Email"}
+          placeholder={"Email address"}
+          backgroundImg={EmailIcon}
+          value={credentials.email}
+          setValue={(value) =>
+            setCredentials((credentials) => ({ ...credentials, email: value }))
+          }
+        />
+        <Input
           type={"Login"}
-          placeholder={"Login or email address"}
+          placeholder={"Login"}
           backgroundImg={LockIcon}
           value={credentials.login}
           setValue={(value) =>
@@ -42,19 +57,10 @@ export const LoginPanel: React.FC = () => {
           style={{
             marginTop: 25,
           }}
-          label={"LOGIN"}
+          label={"REGISTER"}
           type={"submit"}
         />
       </form>
-
-      <Button
-        style={{
-          marginTop: 10,
-          backgroundColor: "transparent",
-        }}
-        label={"Create new Account"}
-        type={"submit"}
-      />
     </BlurredBackground>
   );
 };
