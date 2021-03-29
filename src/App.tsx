@@ -1,37 +1,57 @@
 import React, { useState } from "react";
 import "./App.css";
-import { LoginPanel } from "./UserManagment/Login/LoginPanel";
+import { LoginPanel } from "./UserManagement/Login/Login";
 import MountainsImg from "./icons/city-3660779_1920.jpg";
-import { RegistrationPanel } from "./UserManagment/Registration/RegistrationPanel";
+import { RegistrationPanel } from "./UserManagement/Registration/RegistrationPanel";
 import { NavigationBar } from "./NavigationBar/NavigationBar";
-import { BlurredBackground } from "./UserManagment/Wrapper/BlurredBackground";
+import { EmailEditor } from "./MainPanel/EmailEditor/EmailEditor";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
+enum Views {
+  editor = "Editor",
+  login = "Login",
+  registration = "Registration",
+}
 
 const App: React.FC = () => {
-  const views = ["Login", "Registration"];
-  const [selectedView, setSelectedView] = useState<string | number>(views[0]);
+  const views = Object.entries(Views).map(([key, value]) => value);
   return (
-    <div
-      className="App"
-      style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url("${MountainsImg}")`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "top",
-      }}
-    >
-      <NavigationBar
-        {...{
-          selectedId: selectedView,
-          views: views.map((name, id) => ({
-            id: name,
-            name,
-            onClick: setSelectedView,
-          })),
+    <Router>
+      <div
+        className="App"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url("${MountainsImg}")`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "top",
         }}
-      />
-      {selectedView === "Login" && <LoginPanel />}
-      {selectedView === "Registration" && <RegistrationPanel />}
-    </div>
+      >
+        <NavigationBar
+          {...{
+            views: [
+              { id: "", name: "Homepage", linkTo: "/" },
+              ...views.map((name, id) => ({
+                id: name,
+                name,
+                linkTo: `/${name}`,
+              })),
+            ],
+          }}
+        />
+        <Switch>
+          <Route path={`/${Views.editor}`}>
+            <EmailEditor />
+          </Route>
+          <Route path={`/${Views.login}`}>
+            <LoginPanel />
+          </Route>
+          <Route path={`/${Views.registration}`}>
+            <RegistrationPanel />
+          </Route>
+          <Route path={"/"}></Route>
+        </Switch>
+      </div>
+    </Router>
   );
 };
 

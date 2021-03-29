@@ -57,9 +57,10 @@ export const RegistrationPanel: React.FC = () => {
           style={{
             marginTop: 25,
           }}
-          label={"REGISTER"}
           type={"submit"}
-        />
+        >
+          REGISTER
+        </Button>
       </form>
     </BlurredBackground>
   );

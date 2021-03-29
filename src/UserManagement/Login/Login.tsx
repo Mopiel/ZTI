@@ -42,9 +42,10 @@ export const LoginPanel: React.FC = () => {
           style={{
             marginTop: 25,
           }}
-          label={"LOGIN"}
           type={"submit"}
-        />
+        >
+          LOGIN
+        </Button>
       </form>
 
       <Button
@@ -52,9 +53,10 @@ export const LoginPanel: React.FC = () => {
           marginTop: 10,
           backgroundColor: "transparent",
         }}
-        label={"Create new Account"}
         type={"submit"}
-      />
+      >
+        Create new Account
+      </Button>
     </BlurredBackground>
   );
 };

@@ -3,13 +3,12 @@ import { useStyles } from "./Styles";
 
 interface Props {
   style?: CSSProperties;
-  label: string;
   type?: "button" | "submit" | "reset";
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 export const Button: React.FC<Props> = (props) => {
-  const { style, type, label, onClick } = props;
+  const { style, type, onClick, children } = props;
   const classes = useStyles();
   return (
     <button
@@ -18,7 +17,7 @@ export const Button: React.FC<Props> = (props) => {
       type={type}
       onClick={onClick}
     >
-      {label}
+      {children}
     </button>
   );
 };

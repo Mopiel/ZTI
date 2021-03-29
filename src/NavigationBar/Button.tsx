@@ -1,29 +1,35 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { useStyles } from "./Styles";
 
-type ID = string | number;
-interface Props {
+interface Props<T> {
   selected: boolean;
-  id: ID;
+  id: T;
   name: string;
-  onClick: (id: ID) => void;
+  linkTo: string;
 }
 
-export const Button: React.FC<Props> = (props) => {
-  const { selected, id, name, onClick } = props;
+export function Button<T>(props: Props<T>) {
+  const { selected, id, name, linkTo } = props;
   const classes = useStyles();
 
   return (
-    <div
-      className={classes.button}
+    <Link
+      to={linkTo}
       style={{
-        color: selected ? "#d3dcde" : undefined,
-        borderBottom: "1px solid",
-        borderColor: selected ? "#d3dcde" : "transparent",
+        textDecoration: "none",
       }}
-      onClick={() => onClick(id)}
     >
-      {name}
-    </div>
+      <div
+        className={classes.button}
+        style={{
+          color: selected ? "#d3dcde" : undefined,
+          borderBottom: "1px solid",
+          borderColor: selected ? "#d3dcde" : "transparent",
+        }}
+      >
+        {name}
+      </div>
+    </Link>
   );
-};
+}
