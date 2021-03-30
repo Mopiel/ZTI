@@ -5,6 +5,7 @@ import Editor from "react-email-editor";
 import { Button } from "../Button/Button";
 import ReturnIcon from "../../icons/return.svg";
 import SaveIcon from "../../icons/save.svg";
+import { Link } from "react-router-dom";
 
 export const EmailEditor: React.FC = (props) => {
   const emailEditorRef = useRef<Editor>(null);
@@ -13,7 +14,7 @@ export const EmailEditor: React.FC = (props) => {
     if (!emailEditorRef.current) return;
     emailEditorRef.current.exportHtml((data) => {
       const { design, html } = data;
-      console.log("exportHtml", html);
+      console.log(html);
     });
   };
 
@@ -53,24 +54,20 @@ export const EmailEditor: React.FC = (props) => {
           Email Creator
         </span>
         <div style={{ display: "flex", gap: 20, padding: 20 }}>
-          <Button
-            onClick={() => {
-              emailEditorRef.current?.exportHtml((data) => {
-                const { design, html } = data;
-              });
-            }}
-          >
+          <Button onClick={exportHtml}>
             <img
               style={{ height: 20, width: 20, display: "block" }}
               src={SaveIcon}
             />
           </Button>
-          <Button>
-            <img
-              style={{ height: 20, width: 20, display: "block" }}
-              src={ReturnIcon}
-            />
-          </Button>
+          <Link to={"/"}>
+            <Button>
+              <img
+                style={{ height: 20, width: 20, display: "block" }}
+                src={ReturnIcon}
+              />
+            </Button>
+          </Link>
         </div>
       </div>
       <Editor style={{}} ref={emailEditorRef} onLoad={onLoad} />
