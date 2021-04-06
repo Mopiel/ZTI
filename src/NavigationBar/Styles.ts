@@ -7,7 +7,7 @@ export const useStyles = createUseStyles({
     padding: "15px 20px",
     cursor: "pointer",
     userSelect: "none",
-    color: "#64676c",
+    color: "#afafb6",
     transition: "0.2s all",
     textDecoration: "none",
   },
@@ -17,5 +17,6 @@ export const useStyles = createUseStyles({
     top: 0,
     width: "100%",
     display: "flex",
+    zIndex: 100,
   },
 });

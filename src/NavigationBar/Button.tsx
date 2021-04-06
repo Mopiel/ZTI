@@ -23,7 +23,7 @@ export function Button<T>(props: Props<T>) {
       <div
         className={classes.button}
         style={{
-          color: selected ? "#d3dcde" : undefined,
+          color: selected ? "#f2f2f3" : undefined,
           borderBottom: "1px solid",
           borderColor: selected ? "#d3dcde" : "transparent",
         }}
