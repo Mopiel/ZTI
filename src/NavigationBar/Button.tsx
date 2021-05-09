@@ -7,10 +7,11 @@ interface Props<T> {
   id: T;
   name: string;
   linkTo: string;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 }
 
 export function Button<T>(props: Props<T>) {
-  const { selected, id, name, linkTo } = props;
+  const { selected, id, name, linkTo, onClick } = props;
   const classes = useStyles();
 
   return (
@@ -19,6 +20,7 @@ export function Button<T>(props: Props<T>) {
       style={{
         textDecoration: "none",
       }}
+      onClick={onClick}
     >
       <div
         className={classes.button}

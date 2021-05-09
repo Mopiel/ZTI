@@ -7,4 +7,8 @@ export const useStyles = createUseStyles({
     color: "#d3dcde",
     fontSize: 30,
   },
+  errorMessage: {
+    color: "#ff0033",
+    fontWeight: 700,
+  },
 });

@@ -1,0 +1,18 @@
+mutation Auth($login: String!, $password: String!) {
+  authenticate(loginOrEmail: $login, password: $password) {
+    authenticated
+    message
+    token
+  }
+}
+
+mutation CreateUser($email: String!, $login: String!, $password: String!) {
+  createUser(email: $email, login: $login, password: $password) {
+    message
+    created
+  }
+}
+
+query isAuth {
+  isAuthenticated
+}

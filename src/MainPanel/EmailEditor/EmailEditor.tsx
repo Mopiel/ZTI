@@ -1,4 +1,4 @@
-import React, { createRef, useRef } from "react";
+import React, { useState } from "react";
 import initView from "./example.json";
 
 import Editor from "react-email-editor";
@@ -7,21 +7,21 @@ import ReturnIcon from "../../icons/return.svg";
 import SaveIcon from "../../icons/save.svg";
 import { Link } from "react-router-dom";
 
-export const EmailEditor: React.FC = (props) => {
-  const emailEditorRef = useRef<Editor>(null);
+interface Props {}
 
-  const exportHtml = () => {
-    if (!emailEditorRef.current) return;
-    emailEditorRef.current.exportHtml((data) => {
-      const { design, html } = data;
-      console.log(html);
-    });
-  };
+export const EmailEditor: React.FC<Props> = (props) => {
+  const [emailEditorRef, setEditorRef] = useState<Editor>();
 
   const onLoad = () => {
-    // you can load your template here;
-    // const templateJson = {};
-    emailEditorRef.current?.loadDesign(initView);
+    if (!emailEditorRef) return;
+    emailEditorRef.loadDesign(initView);
+  };
+
+  const exportHtml = () => {
+    if (!emailEditorRef) return;
+    emailEditorRef.exportHtml((data) => {
+      const { design, html } = data;
+    });
   };
 
   return (
@@ -70,7 +70,14 @@ export const EmailEditor: React.FC = (props) => {
           </Link>
         </div>
       </div>
-      <Editor style={{}} ref={emailEditorRef} onLoad={onLoad} />
+      <Editor
+        ref={(ref) => {
+          if (ref) {
+            setEditorRef(ref);
+          }
+        }}
+        onLoad={onLoad}
+      />
     </div>
   );
 };

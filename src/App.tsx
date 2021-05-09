@@ -5,22 +5,55 @@ import MountainsImg from "./icons/city-3660779_1920.jpg";
 import { RegistrationPanel } from "./UserManagement/Registration/RegistrationPanel";
 import { NavigationBar } from "./NavigationBar/NavigationBar";
 import { EmailEditor } from "./MainPanel/EmailEditor/EmailEditor";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Homepage } from "./MainPanel/Homepage/Homepage";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { useIsAuthQuery } from "./graphql";
+import ClipLoader from "react-spinners/ClipLoader";
+import { ClientsList } from "./MainPanel/ClientsLists";
 
-enum Views {
+export enum Views {
   editor = "Editor",
   login = "Login",
   registration = "Registration",
+  lists = "Clients lists",
 }
 
 const App: React.FC = () => {
+  const { loading, data, refetch: checkAuth } = useIsAuthQuery({
+    pollInterval: 100,
+  });
+  const isAuthenticated = data?.isAuthenticated;
+
   useEffect(() => {
     AOS.init();
   }, []);
-  const views = Object.entries(Views).map(([key, value]) => value);
+
+  const views = isAuthenticated
+    ? [
+        { path: Views.editor, component: EmailEditor },
+        { path: Views.lists, component: ClientsList },
+      ]
+    : [
+        { path: Views.login, component: LoginPanel },
+        { path: Views.registration, component: RegistrationPanel },
+      ];
+
+  if (loading || isAuthenticated === undefined)
+    return (
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%,-50%)",
+          overflow: "hidden",
+        }}
+      >
+        <ClipLoader size={300} color={"#123abc"} loading={true} />
+      </div>
+    );
   return (
     <Router>
       <div
@@ -33,53 +66,35 @@ const App: React.FC = () => {
         }}
       >
         <Switch>
-          <Route path={`/${Views.editor}`}>
-            <EmailEditor />
-          </Route>
-          <Route path={`/${Views.login}`}>
+          <Route path={[`/${Views.editor}`]} />
+          <Route>
             <NavigationBar
               {...{
                 views: [
                   { id: "", name: "Homepage", linkTo: "/" },
-                  ...views.map((name, id) => ({
-                    id: name,
-                    name,
-                    linkTo: `/${name}`,
+                  ...views.map((view, id) => ({
+                    id: view.path,
+                    name: view.path,
+                    linkTo: `/${view.path}`,
                   })),
                 ],
               }}
+              showLogOut={isAuthenticated}
+              onLogoutClick={() => {
+                localStorage.removeItem("token");
+                checkAuth();
+              }}
             />
-            <LoginPanel />
           </Route>
-          <Route path={`/${Views.registration}`}>
-            <NavigationBar
-              {...{
-                views: [
-                  { id: "", name: "Homepage", linkTo: "/" },
-                  ...views.map((name, id) => ({
-                    id: name,
-                    name,
-                    linkTo: `/${name}`,
-                  })),
-                ],
-              }}
-            />
-            <RegistrationPanel />
-          </Route>
-          <Route exact path={"/"}>
-            <NavigationBar
-              {...{
-                views: [
-                  { id: "", name: "Homepage", linkTo: "/" },
-                  ...views.map((name, id) => ({
-                    id: name,
-                    name,
-                    linkTo: `/${name}`,
-                  })),
-                ],
-              }}
-            />
-            <Homepage />
+        </Switch>
+        <Switch>
+          {views.map((view) => (
+            <Route key={view.path} path={`/${view.path}`}>
+              <view.component />
+            </Route>
+          ))}
+          <Route>
+            <Homepage isAuth={isAuthenticated} />
           </Route>
         </Switch>
       </div>
