@@ -28,7 +28,7 @@ export const LoginPanel: React.FC = () => {
           e.preventDefault();
           if (!credentials.login.length || !credentials.password.length)
             return setErrorMessage("Fields cannot be empty");
-          const { data } = await authenticate();
+          const { data } = await authenticate({ variables: credentials });
           if (data?.authenticate.authenticated) {
             localStorage.setItem("token", data.authenticate.token);
             setErrorMessage(undefined);

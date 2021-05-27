@@ -16,3 +16,63 @@ mutation CreateUser($email: String!, $login: String!, $password: String!) {
 query isAuth {
   isAuthenticated
 }
+
+query GetEmail($id: String!) {
+  getEmail(id: $id) {
+    id
+    userId
+    name
+    html
+    design
+  }
+}
+
+mutation SetEmailBody($id: String!, $html: String!, $design: String!) {
+  setEmailBody(id: $id, html: $html, design: $design) {
+    id
+    userId
+    name
+  }
+}
+
+query GetEmails {
+  myEmails {
+    id
+    name
+    userId
+    html
+    mailingAddresses
+  }
+}
+
+mutation SetEmailAddresses(
+  $id: String!
+  $name: String!
+  $mailingAddresses: [String!]!
+) {
+  setEmailUsers(id: $id, name: $name, mailingAddresses: $mailingAddresses) {
+    name
+  }
+}
+
+mutation CreateEmail($name: String!) {
+  createEmail(name: $name) {
+    name
+  }
+}
+
+mutation DeleteEmail($id: String!) {
+  deleteEmail(id: $id)
+}
+
+mutation SendEmail($id: String!) {
+  sendEmail(id: $id)
+}
+
+query MyEmails{
+  myEmails{
+    userId
+    html
+    mailingAddresses
+  }
+}

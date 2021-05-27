@@ -1,28 +1,55 @@
-import React, { useState } from "react";
-import initView from "./example.json";
-
+import React, { useEffect, useState } from "react";
 import Editor from "react-email-editor";
 import { Button } from "../Button/Button";
 import ReturnIcon from "../../icons/return.svg";
 import SaveIcon from "../../icons/save.svg";
-import { Link } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
+import {
+  useGetEmailQuery,
+  useSetEmailBodyMutation,
+  GetEmailQuery,
+} from "../../graphql";
 
-interface Props {}
+interface Props extends RouteComponentProps<{ emailId: string }> {}
 
 export const EmailEditor: React.FC<Props> = (props) => {
   const [emailEditorRef, setEditorRef] = useState<Editor>();
+  const [setEmailBody] = useSetEmailBodyMutation();
+  const { data } = useGetEmailQuery({
+    variables: { id: props.match.params.emailId },
+  });
+  const emailBody = data?.getEmail;
 
-  const onLoad = () => {
+  const loadData = (emailBody: NonNullable<GetEmailQuery["getEmail"]>) => {
     if (!emailEditorRef) return;
-    emailEditorRef.loadDesign(initView);
+    try {
+      emailEditorRef.loadDesign(JSON.parse(emailBody.design));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const exportHtml = () => {
     if (!emailEditorRef) return;
-    emailEditorRef.exportHtml((data) => {
+    emailEditorRef.exportHtml(async (data) => {
       const { design, html } = data;
+      const graphqlReturn = await setEmailBody({
+        variables: {
+          id: props.match.params.emailId,
+          design: JSON.stringify(design),
+          html: html,
+        },
+      });
+      console.log(
+        graphqlReturn.data?.setEmailBody ? "Success" : "Something went wrong"
+      );
     });
   };
+
+  useEffect(() => {
+    if (!emailEditorRef || !emailBody) return;
+    loadData(emailBody);
+  }, [emailBody, emailEditorRef]);
 
   return (
     <div
@@ -60,14 +87,12 @@ export const EmailEditor: React.FC<Props> = (props) => {
               src={SaveIcon}
             />
           </Button>
-          <Link to={"/"}>
-            <Button>
-              <img
-                style={{ height: 20, width: 20, display: "block" }}
-                src={ReturnIcon}
-              />
-            </Button>
-          </Link>
+          <Button onClick={() => props.history.goBack()}>
+            <img
+              style={{ height: 20, width: 20, display: "block" }}
+              src={ReturnIcon}
+            />
+          </Button>
         </div>
       </div>
       <Editor
@@ -76,7 +101,6 @@ export const EmailEditor: React.FC<Props> = (props) => {
             setEditorRef(ref);
           }
         }}
-        onLoad={onLoad}
       />
     </div>
   );

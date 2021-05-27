@@ -14,14 +14,17 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { ClientsList } from "./MainPanel/ClientsLists";
 
 export enum Views {
-  editor = "Editor",
   login = "Login",
   registration = "Registration",
   lists = "Clients lists",
 }
 
 const App: React.FC = () => {
-  const { loading, data, refetch: checkAuth } = useIsAuthQuery({
+  const {
+    loading,
+    data,
+    refetch: checkAuth,
+  } = useIsAuthQuery({
     pollInterval: 100,
   });
   const isAuthenticated = data?.isAuthenticated;
@@ -31,10 +34,7 @@ const App: React.FC = () => {
   }, []);
 
   const views = isAuthenticated
-    ? [
-        { path: Views.editor, component: EmailEditor },
-        { path: Views.lists, component: ClientsList },
-      ]
+    ? [{ path: Views.lists, component: ClientsList }]
     : [
         { path: Views.login, component: LoginPanel },
         { path: Views.registration, component: RegistrationPanel },
@@ -66,7 +66,7 @@ const App: React.FC = () => {
         }}
       >
         <Switch>
-          <Route path={[`/${Views.editor}`]} />
+          <Route path={[`/editor`]} />
           <Route>
             <NavigationBar
               {...{
@@ -88,6 +88,7 @@ const App: React.FC = () => {
           </Route>
         </Switch>
         <Switch>
+          <Route path={"/editor/:emailId"} component={EmailEditor} />
           {views.map((view) => (
             <Route key={view.path} path={`/${view.path}`}>
               <view.component />
